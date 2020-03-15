@@ -1,0 +1,169 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.palladiosimulator.installationtest</groupId>
+	<artifactId>org.palladiosimulator.installationtest</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Installation Test</name>
+
+	<properties>
+		<tycho.version>1.6.0</tycho.version>
+		<updatesite.eclipse>http://download.eclipse.org/releases/2019-09/</updatesite.eclipse>
+		<updatesite.palladio>https://updatesite.palladio-simulator.com/palladio-build-updatesite/releases/latest/</updatesite.palladio>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>enable-proxy</id>
+			<activation>
+				<property>
+					<name>env.USE_PROXY</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<build>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.8</version>
+					<executions>
+						<!-- see https://wiki.eclipse.org/Tycho/Additional_Tools#tycho-eclipserun-plugin_behind_a_proxy -->
+						<execution>
+							<id>configure-proxies-for-eclipserun</id>
+							<phase>generate-resources</phase>
+							<configuration>
+								<target>
+									<touch file="${project.build.directory}/eclipserun-work/configuration/.settings/org.eclipse.core.net.prefs" mkdirs="true" />
+									<propertyfile file="${project.build.directory}/eclipserun-work/configuration/.settings/org.eclipse.core.net.prefs">
+										<entry key="eclipse.preferences.version" value="1" />
+										<entry key="nonProxiedHosts" value="${http.nonProxyHosts}" />
+										<entry key="org.eclipse.core.net.hasMigrated" value="true" />
+										<entry key="proxyData/HTTP/hasAuth" value="false" />
+										<entry key="proxyData/HTTP/host" value="${http.proxyHost}" />
+										<entry key="proxyData/HTTP/port" value="${http.proxyPort}" />
+										<entry key="systemProxiesEnabled" value="false" />
+									</propertyfile>
+								</target>
+							</configuration>
+							<goals>
+								<goal>run</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-eclipserun-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<repositories>
+							<repository>
+								<id>Eclipse</id>
+								<layout>p2</layout>
+								<url>${updatesite.eclipse}</url>
+							</repository>
+						</repositories>
+						<jvmArgs>
+							<args>-Xmx1024m</args>
+							<args>-Declipse.p2.mirrors=false</args>
+						</jvmArgs>
+						<applicationsArgs>
+							<args>-application</args>
+							<args>org.eclipse.equinox.p2.director</args>
+							<args>-repository</args>
+							<args>${updatesite.palladio},${updatesite.eclipse}</args>
+							<args>-installIU</args>
+							<args>'Q:everything.select(y | everything.select(x | x.properties ~= filter("(org.eclipse.equinox.p2.type.category=true)") &amp;&amp; x.id ~= /*palladio*/).collect(x | x.requirements).flatten().exists(r | y ~= r))'</args>
+							<args>-debug</args>
+							<args>-consoleLog</args>
+							<args>-destination</args>
+							<args>${project.build.directory}/dummy</args>
+						</applicationsArgs>
+						<dependencies>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.transport.ecf</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.touchpoint.natives</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.touchpoint.eclipse</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.artifact.repository</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.p2.director.app</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.ds</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.core.net</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.frameworkadmin</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.platform</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.equinox.simpleconfigurator</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>org.eclipse.osgi.compatibility.state</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+							<dependency>
+								<artifactId>javax.annotation</artifactId>
+								<type>eclipse-plugin</type>
+							</dependency>
+						</dependencies>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>eclipse-run</goal>
+							</goals>
+							<phase>package</phase>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-eclipserun-plugin</artifactId>
+			</plugin>
+		</plugins>
+		
+	</build>
+</project>
