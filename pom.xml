@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.palladiosimulator.installationtest</groupId>
@@ -10,63 +10,13 @@
 
 	<properties>
 		<tycho.version>2.2.0</tycho.version>
-		<updatesite.eclipse>http://download.eclipse.org/releases/2020-12/</updatesite.eclipse>
+		<updatesite.eclipse>https://ftp.fau.de/eclipse/releases/2020-12/</updatesite.eclipse>
 		<updatesite.palladio>https://updatesite.palladio-simulator.com/palladio-build-updatesite/releases/latest/</updatesite.palladio>
 	</properties>
 
-	<profiles>
-		<profile>
-			<id>enable-proxy</id>
-			<activation>
-				<property>
-					<name>env.USE_PROXY</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 	<build>
-
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.8</version>
-					<executions>
-						<!-- see https://wiki.eclipse.org/Tycho/Additional_Tools#tycho-eclipserun-plugin_behind_a_proxy -->
-						<execution>
-							<id>configure-proxies-for-eclipserun</id>
-							<phase>generate-resources</phase>
-							<configuration>
-								<target>
-									<touch file="${project.build.directory}/eclipserun-work/configuration/.settings/org.eclipse.core.net.prefs" mkdirs="true" />
-									<propertyfile file="${project.build.directory}/eclipserun-work/configuration/.settings/org.eclipse.core.net.prefs">
-										<entry key="eclipse.preferences.version" value="1" />
-										<entry key="nonProxiedHosts" value="${http.nonProxyHosts}" />
-										<entry key="org.eclipse.core.net.hasMigrated" value="true" />
-										<entry key="proxyData/HTTP/hasAuth" value="false" />
-										<entry key="proxyData/HTTP/host" value="${http.proxyHost}" />
-										<entry key="proxyData/HTTP/port" value="${http.proxyPort}" />
-										<entry key="systemProxiesEnabled" value="false" />
-									</propertyfile>
-								</target>
-							</configuration>
-							<goals>
-								<goal>run</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho.extras</groupId>
 					<artifactId>tycho-eclipserun-plugin</artifactId>
@@ -164,6 +114,6 @@
 				<artifactId>tycho-eclipserun-plugin</artifactId>
 			</plugin>
 		</plugins>
-		
+
 	</build>
 </project>
