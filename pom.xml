@@ -9,8 +9,9 @@
 	<name>Installation Test</name>
 
 	<properties>
-		<tycho.version>2.2.0</tycho.version>
-		<updatesite.eclipse>https://ftp.fau.de/eclipse/releases/2020-12/</updatesite.eclipse>
+		<tycho.version>2.3.0</tycho.version>
+		<updatesite.eclipse.version>2020-12</updatesite.eclipse.version> <!-- This is the Eclipse version that is officially supported by the latest release -->
+		<updatesite.eclipse.base>https://ftp.fau.de/eclipse/releases</updatesite.eclipse.base>
 		<updatesite.palladio>https://updatesite.palladio-simulator.com/palladio-build-updatesite/releases/latest/</updatesite.palladio>
 	</properties>
 
@@ -21,30 +22,14 @@
 					<groupId>org.eclipse.tycho.extras</groupId>
 					<artifactId>tycho-eclipserun-plugin</artifactId>
 					<version>${tycho.version}</version>
+					<!-- the following configuration is used by all individual executions -->
 					<configuration>
-						<repositories>
-							<repository>
-								<id>Eclipse</id>
-								<layout>p2</layout>
-								<url>${updatesite.eclipse}</url>
-							</repository>
-						</repositories>
 						<jvmArgs>
 							<args>-Xmx1024m</args>
-							<args>-Declipse.p2.mirrors=false</args>
 						</jvmArgs>
-						<applicationsArgs>
-							<args>-application</args>
-							<args>org.eclipse.equinox.p2.director</args>
-							<args>-repository</args>
-							<args>${updatesite.palladio},${updatesite.eclipse}</args>
-							<args>-installIU</args>
-							<args>'Q:everything.select(y | everything.select(x | x.properties ~= filter("(org.eclipse.equinox.p2.type.category=true)") &amp;&amp; x.id ~= /*palladio*/).collect(x | x.requirements).flatten().exists(r | y ~= r))'</args>
-							<args>-debug</args>
-							<args>-consoleLog</args>
-							<args>-destination</args>
-							<args>${project.build.directory}/dummy</args>
-						</applicationsArgs>
+						<environmentVariables>
+							<eclipse.p2.mirrors>false</eclipse.p2.mirrors>
+						</environmentVariables>
 						<dependencies>
 							<dependency>
 								<artifactId>org.eclipse.equinox.p2.transport.ecf</artifactId>
@@ -97,11 +82,36 @@
 						</dependencies>
 					</configuration>
 					<executions>
+
+						<!-- Execution for officially supported Eclipse version -->
 						<execution>
+							<id>${updatesite.eclipse.version}</id>
 							<goals>
 								<goal>eclipse-run</goal>
 							</goals>
 							<phase>package</phase>
+							<configuration>
+								<repositories>
+									<repository>
+										<id>Eclipse</id>
+										<layout>p2</layout>
+										<url>${updatesite.eclipse.base}/${updatesite.eclipse.version}/</url>
+									</repository>
+								</repositories>
+								<applicationsArgs>
+									<args>-application</args>
+									<args>org.eclipse.equinox.p2.director</args>
+									<args>-repository</args>
+									<args>${updatesite.palladio},${updatesite.eclipse.base}/${updatesite.eclipse.version}/</args>
+									<args>-installIU</args>
+									<args>'Q:everything.select(y | everything.select(x | x.properties ~= filter("(org.eclipse.equinox.p2.type.category=true)") &amp;&amp; x.id ~= /*palladio*/).collect(x | x.requirements).flatten().exists(r | y ~= r))'</args>
+									<args>-debug</args>
+									<args>-consoleLog</args>
+									<args>-destination</args>
+									<args>${project.build.directory}/${updatesite.eclipse.version}</args>
+								</applicationsArgs>
+								<work>${project.build.directory}/${updatesite.eclipse.version}_work</work>
+							</configuration>
 						</execution>
 					</executions>
 				</plugin>
