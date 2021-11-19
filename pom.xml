@@ -10,7 +10,7 @@
 
 	<properties>
 		<tycho.version>2.3.0</tycho.version>
-		<updatesite.eclipse.version>2021-09</updatesite.eclipse.version> <!-- This is the Eclipse version that is officially supported by the latest release -->
+		<updatesite.eclipse.version>2020-12</updatesite.eclipse.version> <!-- This is the Eclipse version that is officially supported by the latest release -->
 		<updatesite.eclipse.base>https://ftp.fau.de/eclipse/releases</updatesite.eclipse.base>
 		<updatesite.palladio>https://updatesite.palladio-simulator.com/palladio-build-updatesite/releases/latest/</updatesite.palladio>
 	</properties>
