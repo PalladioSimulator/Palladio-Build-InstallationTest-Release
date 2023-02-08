@@ -9,8 +9,8 @@
 	<name>Installation Test</name>
 
 	<properties>
-		<tycho.version>2.5.0</tycho.version>
-		<updatesite.eclipse.version>2020-12</updatesite.eclipse.version> <!-- This is the Eclipse version that is officially supported by the latest release -->
+		<tycho.version>2.7.5</tycho.version>
+		<updatesite.eclipse.version>2022-12</updatesite.eclipse.version> <!-- This is the Eclipse version that is officially supported by the latest release -->
 		<updatesite.eclipse.base>https://download.eclipse.org/releases</updatesite.eclipse.base>
 		<updatesite.palladio>https://updatesite.palladio-simulator.com/palladio-build-updatesite/releases/latest/</updatesite.palladio>
 	</properties>
