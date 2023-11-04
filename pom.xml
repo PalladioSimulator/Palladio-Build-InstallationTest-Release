@@ -4,15 +4,15 @@
 
 	<groupId>org.palladiosimulator.installationtest</groupId>
 	<artifactId>org.palladiosimulator.installationtest</artifactId>
-	<version>5.1.0-SNAPSHOT</version>
+	<version>5.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Installation Test</name>
 
 	<properties>
 		<tycho.version>2.7.5</tycho.version>
-		<updatesite.eclipse.version>2022-12</updatesite.eclipse.version> <!-- This is the Eclipse version that is officially supported by the latest release -->
+		<updatesite.eclipse.version>2023-03</updatesite.eclipse.version> <!-- This is the Eclipse version that is officially supported by the latest release -->
 		<updatesite.eclipse.base>https://download.eclipse.org/releases</updatesite.eclipse.base>
-		<updatesite.palladio>https://updatesite.palladio-simulator.com/palladio-build-updatesite/releases/latest/</updatesite.palladio>
+		<updatesite.palladio>https://updatesite.palladio-simulator.com/palladio-build-updatesite/branches/testingDay5.2.0/</updatesite.palladio>
 	</properties>
 
 	<build>
